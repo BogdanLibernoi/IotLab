@@ -1,0 +1,62 @@
+﻿@page
+@using DocumentFormat.OpenXml.Drawing;
+@using Iot.Data;
+@using System.Data;
+@using Npgsql;
+@model Iot.Pages.DayTempTableModel
+
+
+@{
+    ViewData["Title"] = "diagram page";
+}
+
+@{
+    var db = new AppDbContext();
+
+    Response.Headers.Add("Refresh", "2");
+
+}
+
+
+
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+   <title>Температура дома</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+
+</head>
+
+<body>
+    <div id="header-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+
+                        <header id="header">
+                            <h1 id="logo" align="justify">Таблица значений температуры в течение дня</h1>
+                        </header>
+                    <section><p><a href="Index">Назад</a></p></section>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    <main>
+        <article>
+            <section>
+                <table style=" border-collapse: separate; border-spacing: 1rem 1rem; ">
+                    <tr><th>Время</th><th>Температура</th><th>Влажность</th>/tr>
+                     @foreach (var dev in db.Devices)
+                     {
+                        <tr><td>@dev.Date</td><td>@dev.Tempeture С</td><td>@dev.Humidity</td></tr>
+                     }       
+                </table>
+            </section>
+        </article>
+    </main>
+</body>
+</html>

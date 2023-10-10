@@ -1,0 +1,148 @@
+﻿@page
+@using Iot.Data;
+@using Microsoft.EntityFrameworkCore.Storage;
+@model Iot.Pages.IndexModel
+    
+@{
+    ViewData["Title"] = "first page";
+}
+
+@{
+	var db = new AppDbContext();
+
+	var DateNow = (from m in db.Devices select m.Date).ToList().Last();
+	var HumNow = Convert.ToInt32((from m in db.Devices select m.Humidity).ToList().Last());
+	var TempNow = Convert.ToInt32((from m in db.Devices select m.Tempeture).ToList().Last());
+
+	var middleTempToday = Convert.ToInt32(db.Devices.Where(d => d.Date.StartsWith(DateTime.Now.Day.ToString())).ToList()
+							.Average<DeviceData>(d => d.Tempeture));
+	var middleHumToday = Convert.ToInt32(db.Devices.Where(d => d.Date.StartsWith(DateTime.Now.Day.ToString())).ToList()
+							.Average<DeviceData>(d => d.Humidity));
+
+    Response.Headers.Add("Refresh", "3");
+
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Температура дома</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body>
+	<div id="page-wrapper">
+
+		<!-- Header -->
+		<div id="header-wrapper">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+
+						<header id="header">
+							<h1 id="logo" align="justify">Контроллер температуры и влажности дома</h1>
+						</header>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main -->
+		<div id="main">
+			<div class="container">
+				<div class="row main-row">
+					<div class="col-4 col-12-medium">
+
+						<section size="20"
+							style="
+							border-radius: 10px;
+							box-shadow: 0 0 7px 3px #0084A5;
+							text-indent: 30px;
+							padding: 10px 20px 10px 20px;
+							margin: 20px auto;
+							width: 400px;
+						">
+								<h2> Сейчас: </h2>
+								<p>
+									Температура: @TempNow C
+								</p>
+
+								<p>
+									Влажность: @HumNow %
+								</p>
+						</section>
+
+					</div>
+					<div class="col-6 col-12-medium">
+
+						<section size="20"
+								 style="
+							border-radius: 10px;
+							box-shadow: 0 0 7px 3px #0084A5;
+							text-indent: 30px;
+							padding: 10px 20px 10px 20px;
+							margin: 20px auto;
+							width: 400px;
+						">
+							<h2>Средние значения температуры и влажности дома</h2>
+							
+							<ul>
+								<li>
+									<h3>
+										За сегодня:
+									</h3>
+									<p>
+										Температура: @middleTempToday C;
+									</p>
+
+									<p>
+										Влажность: @middleHumToday %
+									</p>
+								</li>
+
+								<li>
+									<h3>
+										За неделю:
+									</h3>
+									<p>
+										Температура: @middleTempToday C;
+									</p>
+
+									<p>
+										Влажность: @middleHumToday %
+									</p>
+								</li>
+							</ul>
+						</section>
+
+						<section size="20"
+								 style="
+							border-radius: 10px;
+							box-shadow: 0 0 7px 3px #0084A5;
+							text-indent: 30px;
+							padding: 10px 20px 10px 20px;
+							margin: 20px auto;
+							width: 400px;
+						">
+							<h2> <a href="DayTempTable">Таблица значений температуры и влажности в течение дня</a></h2>
+						</section>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+</html>
